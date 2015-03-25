@@ -1,3 +1,45 @@
+## 0.9.0 (2015-03-25)
+
+
+#### Bug Fixes
+
+* **all:** load resources by module id only ([655192b2](http://github.com/aurelia/framework/commit/655192b26f7c8b47fb57ad1522e85af58d971443))
+* **aurelia:**
+  * update to use latest animator default config api ([5dea25b5](http://github.com/aurelia/framework/commit/5dea25b57512ccf4701daf6520c0156582a5182b))
+  * update to use new view engine ([e6d20c42](http://github.com/aurelia/framework/commit/e6d20c42ead1f74652fb1bce5b5ae728b4b6bb77))
+  * update to load global resources through new resource pipeline ([bdbca554](http://github.com/aurelia/framework/commit/bdbca554e8d0e7ee839fb1b3b8269f590bc7aa97))
+
+
+#### Features
+
+* **aurelia:** add parameter default to setRoot ([f3955d22](http://github.com/aurelia/framework/commit/f3955d228483758ce8b385bba14d99e053468612))
+
+
+### 0.8.8 (2015-02-28)
+
+
+#### Bug Fixes
+
+* **package:** change jspm directories ([37f2670b](http://github.com/aurelia/framework/commit/37f2670b5498618a4b0602234008c2ed779bca4f))
+
+
+### 0.8.7 (2015-02-28)
+
+
+#### Bug Fixes
+
+* **aurelia:** global resources left out ([4bb098a3](http://github.com/aurelia/framework/commit/4bb098a36ea226dedc5343f3c629d889f9028580))
+* **build:** add missing bower bump ([111797ae](http://github.com/aurelia/framework/commit/111797ae2f669b3eb9a86538c23f5e537fc259c5))
+* **package:** update dependencies ([79feec43](http://github.com/aurelia/framework/commit/79feec432b8f3afd7a2ca90fc4eec2445e34940f))
+
+
+#### Features
+
+* **aurelia:** ensure animator implementation ([e3ab3ab0](http://github.com/aurelia/framework/commit/e3ab3ab08aac022d0c7b58ddef7b8632f2e5f980))
+* **build:** add command line argument for semver bump. resolve #28 ([39652c80](http://github.com/aurelia/framework/commit/39652c8026dd26e459ed5e84a0924e1f58724d53))
+* **framework:** prevent forms without [action] from submiting ([a5805257](http://github.com/aurelia/framework/commit/a58052571281cce001089bc065858e47ee595874))
+
+
 ### 0.8.6 (2015-02-03)
 
 
