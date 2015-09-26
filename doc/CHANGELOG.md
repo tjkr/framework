@@ -1,3 +1,139 @@
+## 0.16.0 (2015-09-05)
+
+
+#### Bug Fixes
+
+* **build:** update linting, testing and tools ([ed65edc6](http://github.com/aurelia/framework/commit/ed65edc6cc7d6e6250ac6885f02780c0ea640cb4))
+* **framework-configuration:**
+  * add public properties ([a5b32853](http://github.com/aurelia/framework/commit/a5b3285341063578cdc8631533bf7c92ff7fe354), closes [#199](http://github.com/aurelia/framework/issues/199))
+  * parameter config in feature and plugin method is optional ([b07c4817](http://github.com/aurelia/framework/commit/b07c481744746d95f60f0c5bebb3caf3306dea55))
+  * improve standardConfiguration ([c91ea2b9](http://github.com/aurelia/framework/commit/c91ea2b9cf5e36042930bf48b27b7287f425067c))
+
+
+## 0.15.0 (2015-08-14)
+
+
+#### Bug Fixes
+
+* **all:** create a property framework configuration object ([bab4c776](http://github.com/aurelia/framework/commit/bab4c776f4266b727e4cf04b04ba409ead3bfeed))
+* **aurelia:**
+  * enable multiple calls to setRoot ([10708cae](http://github.com/aurelia/framework/commit/10708caefb9e26556c9c45686198f8c343de6a5d))
+  * update to use ViewResources instead of ResourceRegistry ([f458a193](http://github.com/aurelia/framework/commit/f458a193f69dfa1d8174b2424ba81d5b864b7429))
+* **framework:** Use correct import for core-js ([da0756fd](http://github.com/aurelia/framework/commit/da0756fd94f5a60df5218ceaa09fdb3bb0e2ad27))
+* **framework-configuration:** correct type information ([f1fc9987](http://github.com/aurelia/framework/commit/f1fc998735d1821b2a29361bd9247077e646c1bc))
+
+
+#### Features
+
+* **docs:**
+  * generate api.json from .d.ts file ([38c06e2c](http://github.com/aurelia/framework/commit/38c06e2ce93b22244950cf57e97e28493fc2334b))
+  * generate api.json from .d.ts file ([1e2af71b](http://github.com/aurelia/framework/commit/1e2af71bf0aee020033cef33faaca1b869e7b5d9))
+  * generate api.json from .d.ts file ([a6960cbc](http://github.com/aurelia/framework/commit/a6960cbc6e171142c3a3b8dada4915e11b433ecc))
+
+
+### 0.14.1 (2015-08-08)
+
+
+#### Bug Fixes
+
+* **plugins:** preserve built-in plugin load order ([25a35297](http://github.com/aurelia/framework/commit/25a35297cb330bdbac7796a20b4ad6842e8de477))
+
+
+## 0.14.0 (2015-08-05)
+
+
+#### Bug Fixes
+
+* **plugin:** add feature api and prepare for jspm beta ([5f0b7cf3](http://github.com/aurelia/framework/commit/5f0b7cf35c7c7b445f06b237aab704ceb44c88ae))
+
+
+#### Features
+
+* **aurelia:** add preliminary enhance api ([f970c65c](http://github.com/aurelia/framework/commit/f970c65c2053391a5b6bd79079102fde8c750612))
+* **plugins:** better api by moving some bootstrapper code directly into aurelia ([f76baf08](http://github.com/aurelia/framework/commit/f76baf084f382c168d3a2225df091df5d36f9a50))
+
+
+### 0.13.4 (2015-07-29)
+
+
+#### Features
+
+* **aurelia:** configure host as root dom boundary ([5a99ab02](http://github.com/aurelia/framework/commit/5a99ab0284813eba42b579058e3059a756ca485d))
+
+
+### 0.13.3 (2015-07-13)
+
+
+#### Bug Fixes
+
+* **dts:** update promise-based apis ([94548514](http://github.com/aurelia/framework/commit/94548514165b1cb8ba0629f5e775d0d758630ce9))
+
+
+### 0.13.2 (2015-07-07)
+
+
+### 0.13.1 (2015-07-03)
+
+
+#### Bug Fixes
+
+* **plugins:** address changes in jspm/system.js beta ([90afee4d](http://github.com/aurelia/framework/commit/90afee4de0770c576fb8fd4f0af5fb3191833f0f))
+
+
+## 0.13.0 (2015-07-02)
+
+
+## 0.12.0 (2015-06-08)
+
+
+#### Bug Fixes
+
+* **index:** ensure export of path module api ([17cf46cd](http://github.com/aurelia/framework/commit/17cf46cdfbf4081e08c41db3c20a0590c885d254))
+
+
+#### Features
+
+* **aurelia:** update to use composition host instruction value ([bd456bc5](http://github.com/aurelia/framework/commit/bd456bc5411ed7f122bc14a2ecc0d7b0cc2f192b))
+
+
+## 0.11.0 (2015-05-01)
+
+
+#### Bug Fixes
+
+* **aurelia:** throw a descriptive error when globalizeResources is called with non-strings ([09038c83](http://github.com/aurelia/framework/commit/09038c83b4ca02f2e55b30804b330c59207f682d))
+* **plugin:** make api use configure like other apis in framework ([cbfdaad7](http://github.com/aurelia/framework/commit/cbfdaad764abca997a15302073819d0723ccd32a), closes [#96](http://github.com/aurelia/framework/issues/96))
+* **plugins:** removed unnecessary es5 helper support ([710499a8](http://github.com/aurelia/framework/commit/710499a896ccbc6d787b29aa8da8aeb373bfae8f))
+
+
+#### Features
+
+* **aurelia:** take advantage of previously configured host ([0c5bbcd7](http://github.com/aurelia/framework/commit/0c5bbcd799be99958dcea3c3a1f850bdd43700a4))
+
+
+#### Breaking Changes
+
+* If you were using ES5 and used the computed helper on
+function, this will affect you as that is no longer present.
+
+ ([710499a8](http://github.com/aurelia/framework/commit/710499a896ccbc6d787b29aa8da8aeb373bfae8f))
+
+
+## 0.10.0 (2015-04-09)
+
+
+#### Bug Fixes
+
+* **all:** update compiler and metadata plugin ([50e3afe0](http://github.com/aurelia/framework/commit/50e3afe0e5a4c6c0e15242433007e4fe068e35fc))
+
+
+#### Features
+
+* **plugins:**
+  * remove AtScript support ([f1adb01a](http://github.com/aurelia/framework/commit/f1adb01ab32afcd8ba3b427e9274f72fb4d56fda))
+  * update to use new metadata locator function ([4b09490d](http://github.com/aurelia/framework/commit/4b09490daf7f351e1001557c8e8a8032bdadbf1c))
+
+
 ## 0.9.0 (2015-03-25)
 
 

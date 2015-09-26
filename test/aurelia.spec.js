@@ -1,8 +1,8 @@
-import {Aurelia} from '../src/index';
+import {Aurelia} from '../src/aurelia';
 import {Container} from 'aurelia-dependency-injection';
 import {Loader} from 'aurelia-loader';
-import {BindingLanguage, ResourceCoordinator, ViewSlot, ResourceRegistry, CompositionEngine} from 'aurelia-templating';
-import {Plugins} from '../src/plugins';
+import {BindingLanguage, ViewSlot, ViewResources, CompositionEngine} from 'aurelia-templating';
+import {FrameworkConfiguration} from '../src/framework-configuration';
 
 describe('aurelia', () => {
   describe("constructor", () => {
@@ -16,68 +16,27 @@ describe('aurelia', () => {
 
       expect(aurelia.loader).toBe(mockLoader);
       expect(aurelia.container).toEqual(jasmine.any(Container));
-      expect(aurelia.resources).toEqual(jasmine.any(ResourceRegistry));
-      expect(aurelia.use).toEqual(jasmine.any(Plugins));
+      expect(aurelia.resources).toEqual(jasmine.any(ViewResources));
+      expect(aurelia.use).toEqual(jasmine.any(FrameworkConfiguration));
       expect(aurelia.started).toBeFalsy();
     });
 
     it("will take in a loader, container and resource registry", () => {
       let mockLoader = jasmine.createSpy('loader');
-      let mockResources = jasmine.createSpy('resourceRegistry');
-      let mockContainer = jasmine.createSpyObj('container', ['registerInstance']);
+      let mockResources = jasmine.createSpy('viewResources');
+      let mockContainer = jasmine.createSpyObj('container', ['registerInstance', 'makeGlobal']);
 
       let aurelia = new Aurelia(mockLoader, mockContainer, mockResources);
       expect(aurelia.loader).toBe(mockLoader);
       expect(aurelia.container).toBe(mockContainer);
       expect(aurelia.resources).toBe(mockResources);
-      expect(aurelia.use).toEqual(jasmine.any(Plugins));
+      expect(aurelia.use).toEqual(jasmine.any(FrameworkConfiguration));
       expect(aurelia.started).toBeFalsy();
 
       //Lets check the container was called
       expect(mockContainer.registerInstance).toHaveBeenCalledWith(Aurelia, aurelia);
       expect(mockContainer.registerInstance).toHaveBeenCalledWith(Loader, mockLoader);
-      expect(mockContainer.registerInstance).toHaveBeenCalledWith(ResourceRegistry, mockResources);
-    });
-
-  });
-
-  describe('with', () => {
-    let aurelia, mockContainer, testInstance;
-
-    class TestClass {
-    }
-
-    beforeEach(() => {
-      mockContainer = jasmine.createSpyObj('container', ['registerInstance', 'registerSingleton']);
-      aurelia = new Aurelia({}, mockContainer);
-      testInstance = new TestClass();
-    });
-
-    it('instance will register a instance with the container', () => {
-      expect(aurelia.withInstance(TestClass, testInstance)).toBe(aurelia);
-      expect(mockContainer.registerInstance).toHaveBeenCalledWith(TestClass, testInstance);
-    });
-
-    it('singleton will register a singleton with the container', () => {
-      expect(aurelia.withSingleton(TestClass, testInstance)).toBe(aurelia);
-      expect(mockContainer.registerSingleton).toHaveBeenCalledWith(TestClass, testInstance);
-    });
-
-    it("globalizeResources will add an array of paths", () => {
-      expect(aurelia.globalizeResources(['./someResource'])).toBe(aurelia);
-      expect('./someResource' in aurelia.resourcesToLoad).toEqual(true);
-    });
-
-    it("globalizeResources will add resources to lookup", () => {
-      expect(aurelia.globalizeResources('./someResource', './andAnother')).toBe(aurelia);
-      expect('./someResource' in aurelia.resourcesToLoad).toEqual(true);
-      expect('./someResource' in aurelia.resourcesToLoad).toEqual(true);
-    });
-
-    it('globalizeResources will make relative to currentPluginId if set in aurelia', () => {
-      aurelia.currentPluginId = './plugin/index';
-      expect(aurelia.globalizeResources('./someResource')).toBe(aurelia);
-      expect('plugin/someResource' in aurelia.resourcesToLoad).toEqual(true);
+      expect(mockContainer.registerInstance).toHaveBeenCalledWith(ViewResources, mockResources);
     });
 
   });
@@ -87,19 +46,19 @@ describe('aurelia', () => {
 
     beforeEach(() => {
       mockLoader = jasmine.createSpy('loader');
-      mockResources = jasmine.createSpy('resourceRegistry');
+      mockResources = jasmine.createSpy('viewResources');
 
       mockViewEngine = jasmine.createSpyObj("viewEngine", ["importViewResources"]);
       mockViewEngine.importViewResources.and.returnValue(new Promise((resolve, error) => {
         resolve();
       }));
 
-      mockContainer = jasmine.createSpyObj('container', ['registerInstance', 'hasHandler', 'get']);
+      mockContainer = jasmine.createSpyObj('container', ['registerInstance', 'hasHandler', 'get', 'makeGlobal']);
       mockContainer.hasHandler.and.returnValue(true);
       mockContainer.get.and.returnValue(mockViewEngine);
 
-      mockPlugin = jasmine.createSpyObj('plugin', ['_process']);
-      mockPlugin._process.and.returnValue(new Promise((resolve, error) => {
+      mockPlugin = jasmine.createSpyObj('plugin', ['apply']);
+      mockPlugin.apply.and.returnValue(new Promise((resolve, error) => {
         resolve();
       }));
 
@@ -115,13 +74,13 @@ describe('aurelia', () => {
     });
 
     it("will fail if the plugin loader fails", (done) => {
-      mockPlugin._process.and.returnValue(new Promise((resolve, error) => {
+      mockPlugin.apply.and.returnValue(new Promise((resolve, error) => {
         error();
       }));
 
       aurelia.start()
         .then(() => expect(true).toBeFalsy("Startup should have failed"))
-        .catch(() => expect(mockPlugin._process).toHaveBeenCalled())
+        .catch(() => expect(mockPlugin.apply).toHaveBeenCalled())
         .then(done);
     });
 
@@ -147,22 +106,6 @@ describe('aurelia', () => {
         .catch(() => expect(true).toBeFalsy("Starting shouldn't have failed"))
         .then(done);
     });
-
-    it("should load resources that are defined and register them with the resource registry", (done) => {
-      aurelia.resourcesToLoad["./aResource"] = undefined;
-      let resource = jasmine.createSpyObj("resource", ["register"]);
-
-      mockViewEngine.importViewResources.and.returnValue(new Promise((resolve, error) => {
-        resolve([resource]);
-      }));
-
-      aurelia.start().then(() => {
-        expect(mockViewEngine.importViewResources).toHaveBeenCalledWith(["./aResource"], [undefined], mockResources);
-      })
-        .catch((reason) => expect(true).toBeFalsy(reason))
-        .then(done);
-    });
-
   });
 
   describe('setRoot()', () => {
@@ -170,7 +113,7 @@ describe('aurelia', () => {
 
     beforeEach(() => {
       mockLoader = jasmine.createSpy("loader");
-      mockContainer = jasmine.createSpyObj("container", ["get", "registerInstance"]);
+      mockContainer = jasmine.createSpyObj("container", ["get", "registerInstance", 'makeGlobal']);
       mockCompositionEngine = jasmine.createSpyObj("compositionEngine", ["compose"]);
 
       rootModel = {};
@@ -200,7 +143,6 @@ describe('aurelia', () => {
           expect(aurelia.host).toBe(document.body);
           expect(document.body.aurelia).toBe(aurelia);
           expect(documentSpy).toHaveBeenCalledWith("someIDThatShouldNotExist");
-          expect(mockContainer.registerInstance).toHaveBeenCalledWith(Element, document.body);
         })
         .catch((reason) => expect(false).toBeTruthy(reason))
         .then(done);
@@ -214,7 +156,6 @@ describe('aurelia', () => {
           expect(aurelia.host).toBe(document.body);
           expect(document.body.aurelia).toBe(aurelia);
           expect(documentSpy).toHaveBeenCalledWith("applicationHost");
-          expect(mockContainer.registerInstance).toHaveBeenCalledWith(Element, document.body);
         })
         .catch((reason) => expect(false).toBeTruthy(reason))
         .then(done);
@@ -229,7 +170,6 @@ describe('aurelia', () => {
           expect(result).toBe(aurelia);
           expect(aurelia.host).toBe(host);
           expect(host.aurelia).toBe(aurelia);
-          expect(mockContainer.registerInstance).toHaveBeenCalledWith(Element, host);
         })
         .catch((reason) => expect(false).toBeTruthy(reason))
         .then(done);
