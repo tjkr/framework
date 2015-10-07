@@ -90,9 +90,7 @@ var FrameworkConfiguration = (function () {
     this.postTasks = [];
     this.resourcesToLoad = {};
     this.preTask(function () {
-      return System.normalize('aurelia-bootstrapper').then(function (bootstrapperName) {
-        return _this.bootstrapperName = bootstrapperName;
-      });
+      return _this.bootstrapperName = aurelia.loader.normalizeSync('aurelia-bootstrapper');
     });
     this.postTask(function () {
       return loadResources(aurelia.container, _this.resourcesToLoad, aurelia.resources);
@@ -177,13 +175,12 @@ var FrameworkConfiguration = (function () {
 
     this.plugin(plugin);
     this.preTask(function () {
-      return System.normalize(name, _this2.bootstrapperName).then(function (normalizedName) {
-        normalizedName = normalizedName.endsWith('.js') || normalizedName.endsWith('.ts') ? normalizedName.substring(0, normalizedName.length - 3) : normalizedName;
+      var normalizedName = _this2.aurelia.loader.normalizeSync(name, _this2.bootstrapperName);
+      normalizedName = normalizedName.endsWith('.js') || normalizedName.endsWith('.ts') ? normalizedName.substring(0, normalizedName.length - 3) : normalizedName;
 
-        plugin.moduleId = normalizedName;
-        plugin.resourcesRelativeTo = normalizedName;
-        System.map[name] = normalizedName;
-      });
+      plugin.moduleId = normalizedName;
+      plugin.resourcesRelativeTo = normalizedName;
+      _this2.aurelia.loader.map(name, normalizedName);
     });
 
     return this;
@@ -217,11 +214,10 @@ var FrameworkConfiguration = (function () {
     var _this3 = this;
 
     this.preTask(function () {
-      return System.normalize('aurelia-logging-console', _this3.bootstrapperName).then(function (name) {
-        return _this3.aurelia.loader.loadModule(name).then(function (m) {
-          TheLogManager.addAppender(new m.ConsoleAppender());
-          TheLogManager.setLevel(TheLogManager.logLevel.debug);
-        });
+      var name = _this3.aurelia.loader.normalizeSync('aurelia-logging-console', _this3.bootstrapperName);
+      return _this3.aurelia.loader.loadModule(name).then(function (m) {
+        TheLogManager.addAppender(new m.ConsoleAppender());
+        TheLogManager.setLevel(TheLogManager.logLevel.debug);
       });
     });
 
