@@ -3,13 +3,17 @@ import {Container} from 'aurelia-dependency-injection';
 import {Loader} from 'aurelia-loader';
 import {BindingLanguage, ViewSlot, ViewResources, CompositionEngine} from 'aurelia-templating';
 import {FrameworkConfiguration} from '../src/framework-configuration';
+import {initialize} from 'aurelia-pal-browser';
+import {PLATFORM} from 'aurelia-pal';
 
 describe('aurelia', () => {
+  beforeAll(() => initialize());
+
   describe("constructor", () => {
 
     it("should have good defaults", () => {
       let mockLoader = {};
-      window.AureliaLoader = function(){
+      PLATFORM.Loader = function(){
         return mockLoader;
       }
       let aurelia = new Aurelia();
@@ -53,8 +57,8 @@ describe('aurelia', () => {
         resolve();
       }));
 
-      mockContainer = jasmine.createSpyObj('container', ['registerInstance', 'hasHandler', 'get', 'makeGlobal']);
-      mockContainer.hasHandler.and.returnValue(true);
+      mockContainer = jasmine.createSpyObj('container', ['registerInstance', 'hasResolver', 'get', 'makeGlobal']);
+      mockContainer.hasResolver.and.returnValue(true);
       mockContainer.get.and.returnValue(mockViewEngine);
 
       mockPlugin = jasmine.createSpyObj('plugin', ['apply']);
@@ -86,10 +90,10 @@ describe('aurelia', () => {
 
     //I'm going to assume start should fail in this case.
     it("should check for a binding language and log an error if one is not set", (done) => {
-      mockContainer.hasHandler.and.returnValue(false);
+      mockContainer.hasResolver.and.returnValue(false);
       aurelia.start()
         .then(() => expect(true).toBeFalsy("Should have not started up"))
-        .catch(() => expect(mockContainer.hasHandler).toHaveBeenCalledWith(BindingLanguage))
+        .catch(() => expect(mockContainer.hasResolver).toHaveBeenCalledWith(BindingLanguage))
         .then(done);
     });
 
@@ -134,22 +138,8 @@ describe('aurelia', () => {
       }
     });
 
-    //This needs to be reworded
-    it("should default the host to the document body if the supplied applicationHost is a string and no element with that id is found", (done) => {
-      var documentSpy = spyOn(document, "getElementById").and.callThrough();
-      aurelia.setRoot(rootModel, "someIDThatShouldNotExist")
-        .then((result) => {
-          expect(result).toBe(aurelia);
-          expect(aurelia.host).toBe(document.body);
-          expect(document.body.aurelia).toBe(aurelia);
-          expect(documentSpy).toHaveBeenCalledWith("someIDThatShouldNotExist");
-        })
-        .catch((reason) => expect(false).toBeTruthy(reason))
-        .then(done);
-    });
-
     it("should try and find the element with an id of applicationHost if one is not supplied", (done) => {
-      var documentSpy = spyOn(document, "getElementById").and.callThrough();
+      let documentSpy = spyOn(document, "getElementById").and.returnValue(document.body);
       aurelia.setRoot(rootModel)
         .then((result) => {
           expect(result).toBe(aurelia);
@@ -164,7 +154,7 @@ describe('aurelia', () => {
     it("should use the applicationHost if it's not a string as the host", (done) => {
       //This wouldn't have succeeded because registerInstance checks the type
       //But the function doesn't guard against applicationHost so this test is valid
-      var host = { firstChild:{} };
+      let host = { firstChild:{} };
       aurelia.setRoot(rootModel, host)
         .then((result) => {
           expect(result).toBe(aurelia);
@@ -177,6 +167,7 @@ describe('aurelia', () => {
 
     it("should call the compose function of the composition instance with a well formed instruction", (done) => {
       let attachedSpy;
+      let documentSpy = spyOn(document, "getElementById").and.returnValue(document.body);
       mockCompositionEngine.compose.and.callFake((instruction) => {
         attachedSpy = spyOn(instruction.viewSlot, 'attached');
         return composePromise;
@@ -199,7 +190,7 @@ describe('aurelia', () => {
     });
 
     it("should fire a custom aurelia-composed event when it's done", (done) => {
-
+      let documentSpy = spyOn(document, "getElementById").and.returnValue(document.body);
       composeListener = (event) => {
         expect(event).toEqual(jasmine.any(window.Event));
         expect(event.type).toEqual("aurelia-composed");
